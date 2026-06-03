@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db.nuarieneibfxckdiymql.supabase.co:5432/postgres
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: create

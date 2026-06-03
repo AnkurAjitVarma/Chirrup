@@ -21,15 +21,16 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.spring.boot.actuator)
-    implementation(libs.spring.boot.amqp)
+    implementation(projects.user)
+//    implementation(libs.spring.boot.actuator)
+//    implementation(libs.spring.boot.amqp)
     implementation(libs.spring.boot.data.jpa)
-    implementation(libs.spring.boot.data.redis)
-    implementation(libs.spring.boot.mail)
-    implementation(libs.spring.boot.security)
-    implementation(libs.spring.boot.thymeleaf)
+//    implementation(libs.spring.boot.data.redis)
+//    implementation(libs.spring.boot.mail)
+//    implementation(libs.spring.boot.security)
+//    implementation(libs.spring.boot.thymeleaf)
     implementation(libs.spring.boot.web.mvc)
-    implementation(libs.spring.boot.websocket)
+//    implementation(libs.spring.boot.websocket)
 
     implementation(libs.kotlin.reflect)
     implementation(libs.jackson.module.kotlin)
