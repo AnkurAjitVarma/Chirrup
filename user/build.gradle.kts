@@ -26,9 +26,10 @@ dependencies {
     implementation(libs.spring.boot.data.jpa)
 //    implementation(libs.spring.boot.data.redis)
 //    implementation(libs.spring.boot.mail)
-//    implementation(libs.spring.boot.security)
+    implementation(libs.spring.boot.security)
 //    implementation(libs.spring.boot.thymeleaf)
     implementation(libs.spring.boot.web.mvc)
+    implementation(libs.spring.boot.validation)
 //    implementation(libs.spring.boot.websocket)
 
     implementation(libs.kotlin.reflect)
