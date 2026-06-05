@@ -32,6 +32,10 @@ dependencies {
     implementation(libs.spring.boot.validation)
 //    implementation(libs.spring.boot.websocket)
 
+    implementation(libs.jwt.api)
+    runtimeOnly(libs.jwt.impl)
+    runtimeOnly(libs.jwt.jackson)
+
     implementation(libs.kotlin.reflect)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.thymeleaf.extras.springsecurity6)

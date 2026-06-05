@@ -1,5 +1,6 @@
 package me.ankur_varma.chirrup.api.advice
 
+import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
 import me.ankur_varma.chirrup.domain.exception.UserAlreadyExists
 import me.ankur_varma.chirrup.domain.exception.UsernameTaken
 import org.springframework.http.HttpStatus
@@ -29,6 +30,14 @@ class AuthControllerAdvice {
                 "code" to "USER_EXISTS",
                 "message" to e.message,
             )
+        )
+
+    @ExceptionHandler(InvalidTokenException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onInvalidTokenException(e: InvalidTokenException) =
+        mapOf(
+            "code" to "INVALID_TOKEN",
+            "message" to e.message
         )
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
