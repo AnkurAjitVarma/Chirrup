@@ -1,6 +1,7 @@
 package me.ankur_varma.chirrup.service.auth
 
 import me.ankur_varma.chirrup.domain.exception.UserAlreadyExists
+import me.ankur_varma.chirrup.domain.exception.UsernameTaken
 import me.ankur_varma.chirrup.domain.model.User
 import me.ankur_varma.chirrup.infra.database.entity.UserEntity
 import me.ankur_varma.chirrup.infra.database.mappers.toUser
@@ -24,7 +25,11 @@ class AuthService(
                 )
             ).toUser()
         } catch (e: DataIntegrityViolationException) {
-            throw UserAlreadyExists(email, username)
+            throw when {
+                userRepository.existsByEmail(email) -> UserAlreadyExists(email)
+                userRepository.existsByUsername(username) -> UsernameTaken(username)
+                else -> e
+            }
         }
     }
 
