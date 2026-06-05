@@ -1,17 +1,18 @@
-package me.ankur_varma.chirrup.service.auth
+package me.ankur_varma.chirrup.service.auth.jwt
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
+import me.ankur_varma.chirrup.domain.model.Token
 import me.ankur_varma.chirrup.domain.model.UserId
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.util.*
 import kotlin.io.encoding.Base64
 
-@Service
-class JWTService(
+@Component
+class JWTGenerator(
     @param:Value("\${jwt.access-duration}") private val accessDuration: Long,
     @param:Value("\${jwt.refresh-duration}") private val refreshDuration: Long,
     @param:Value("\${jwt.secret}") private val secret64: String
@@ -20,7 +21,7 @@ class JWTService(
     private val accessTokenDurationMs = accessDuration * 1000
     private val refreshTokenDurationMs = refreshDuration * 1000
 
-    fun generateAccessToken(userId: UserId): String {
+    fun generateAccessToken(userId: UserId): Token {
         return generateToken(
             userId = userId,
             type = Type.ACCESS,
@@ -28,7 +29,7 @@ class JWTService(
         )
     }
 
-    fun generateRefreshToken(userId: UserId): String {
+    fun generateRefreshToken(userId: UserId): Token {
         return generateToken(
             userId = userId,
             type = Type.REFRESH,
@@ -58,16 +59,17 @@ class JWTService(
         userId: UserId,
         type: Type,
         duration: Long
-    ): String {
+    ): Token {
         val now = Date()
         val expiresAt = Date(now.time + duration)
-        return Jwts.builder()
+        val token = Jwts.builder()
             .subject(userId.toString())
             .claims(mapOf("type" to type))
             .issuedAt(now)
             .expiration(expiresAt)
             .signWith(key, Jwts.SIG.HS256)
             .compact()
+        return Token(token, expiresAt)
     }
 
     private fun parseAllClaims(token: String): Claims? = runCatching {
