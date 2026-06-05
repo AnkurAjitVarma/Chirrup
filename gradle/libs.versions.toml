@@ -3,6 +3,7 @@ kotlin = "2.2.21"
 spring-boot = "4.0.6"
 spring-dependency-management = "1.1.7"
 jackson-kotlin = "3.0.3"
+jwt = "0.12.6"
 thymeleaf-extras = "3.1.3.RELEASE"
 postgresql = "42.7.8"
 junit-platform = "1.13.4"
@@ -19,7 +20,7 @@ spring-boot-security = { module = "org.springframework.boot:spring-boot-starter-
 spring-boot-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
 spring-boot-web-mvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot" }
 spring-boot-websocket = { module = "org.springframework.boot:spring-boot-starter-websocket", version.ref = "spring-boot" }
-spring-boot-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot"}
+spring-boot-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 
 # Kotlin
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -33,6 +34,11 @@ thymeleaf-extras-springsecurity6 = { module = "org.thymeleaf.extras:thymeleaf-ex
 
 # Database
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+
+# JWT
+jwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jwt" }
+jwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
+jwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
 
 # Testing
 spring-boot-actuator-test = { module = "org.springframework.boot:spring-boot-starter-actuator-test", version.ref = "spring-boot" }
