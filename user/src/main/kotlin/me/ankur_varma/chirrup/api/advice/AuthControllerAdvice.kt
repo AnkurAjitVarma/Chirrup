@@ -1,6 +1,7 @@
 package me.ankur_varma.chirrup.api.advice
 
 import me.ankur_varma.chirrup.domain.exception.UserAlreadyExists
+import me.ankur_varma.chirrup.domain.exception.UsernameTaken
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -13,6 +14,16 @@ class AuthControllerAdvice {
     @ExceptionHandler(UserAlreadyExists::class)
     @ResponseStatus(HttpStatus.CONFLICT)
     fun onUserAlreadyExists(e: UserAlreadyExists) =
+        mapOf(
+            "error" to mapOf(
+                "code" to "USER_EXISTS",
+                "message" to e.message,
+            )
+        )
+
+    @ExceptionHandler(UsernameTaken::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun onUsernameTaken(e: UsernameTaken) =
         mapOf(
             "error" to mapOf(
                 "code" to "USER_EXISTS",
