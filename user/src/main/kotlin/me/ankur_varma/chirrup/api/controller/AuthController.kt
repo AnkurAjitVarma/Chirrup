@@ -1,8 +1,11 @@
 package me.ankur_varma.chirrup.api.controller
 
 import jakarta.validation.Valid
+import me.ankur_varma.chirrup.api.dto.AuthenticatedUserDto
+import me.ankur_varma.chirrup.api.dto.LoginRequest
 import me.ankur_varma.chirrup.api.dto.RegisterRequest
 import me.ankur_varma.chirrup.api.dto.UserDto
+import me.ankur_varma.chirrup.api.mappers.toAuthenticatedUserDto
 import me.ankur_varma.chirrup.api.mappers.toUserDto
 import me.ankur_varma.chirrup.service.auth.AuthService
 import org.springframework.http.HttpStatus
@@ -15,5 +18,10 @@ class AuthController(private val authService: AuthService) {
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@Valid @RequestBody request: RegisterRequest): UserDto {
         return authService.registerUser(request.email, request.username, request.password).toUserDto()
+    }
+
+    @PostMapping(value = ["/login"])
+    fun login(@RequestBody credentials: LoginRequest): AuthenticatedUserDto {
+        return authService.authenticateUser(credentials.email, credentials.password).toAuthenticatedUserDto()
     }
 }
