@@ -3,8 +3,8 @@ package me.ankur_varma.chirrup.api.controller
 import jakarta.validation.Valid
 import me.ankur_varma.chirrup.api.dto.*
 import me.ankur_varma.chirrup.api.mappers.toUserDto
-import me.ankur_varma.chirrup.service.auth.UserService
 import me.ankur_varma.chirrup.service.token.TokenService
+import me.ankur_varma.chirrup.service.user.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -16,13 +16,13 @@ class AuthController(
 ) {
     @PostMapping(value = ["/register"])
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@Valid @RequestBody request: RegisterRequest): UserDto {
-        return authService.registerUser(request.email, request.username, request.password).toUserDto()
+    fun register(@Valid @RequestBody body: RegisterRequest): UserDto {
+        return authService.registerUser(body.email, body.username, body.password).toUserDto()
     }
 
     @PostMapping(value = ["/login"])
-    fun login(@RequestBody credentials: LoginRequest): AuthenticatedUserDto {
-        val user = authService.authenticateUser(credentials.email, credentials.password)
+    fun login(@RequestBody body: LoginRequest): AuthenticatedUserDto {
+        val user = authService.authenticateUser(body.email, body.password)
         val (access, refresh) = tokenService.generateTokenPairFor(user)
         return AuthenticatedUserDto(
             user = user.toUserDto(),
@@ -45,5 +45,12 @@ class AuthController(
         )
     }
 
-
+    @PostMapping(value = ["/logout"])
+    fun logout(
+        @RequestBody body: LogoutRequest
+    ) {
+        val token = body.token
+        val (_, tokenId) = tokenService.validateRefreshToken(token)
+        tokenService.remove(tokenId)
+    }
 }

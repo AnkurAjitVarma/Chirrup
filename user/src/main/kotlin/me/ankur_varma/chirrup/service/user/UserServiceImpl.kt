@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.service.auth
+package me.ankur_varma.chirrup.service.user
 
 import me.ankur_varma.chirrup.domain.exception.IncorrectPassword
 import me.ankur_varma.chirrup.domain.exception.UserAlreadyExists
@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class AuthServiceImpl(
+class UserServiceImpl(
     private val userRepository: UserRepository,
     private val encoder: PasswordEncoder,
 ) : UserService {
