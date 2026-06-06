@@ -1,8 +1,12 @@
 package me.ankur_varma.chirrup.service.token
 
+import jakarta.transaction.Transactional
+import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
 import me.ankur_varma.chirrup.domain.model.TokenPair
-import me.ankur_varma.chirrup.domain.model.UserId
+import me.ankur_varma.chirrup.domain.model.User
+import me.ankur_varma.chirrup.domain.model.ValidatedRefreshToken
 import me.ankur_varma.chirrup.infra.database.entity.RefreshTokenEntity
+import me.ankur_varma.chirrup.infra.database.mappers.toUser
 import me.ankur_varma.chirrup.infra.database.repository.RefreshTokenRepository
 import me.ankur_varma.chirrup.infra.token.generator.TokenGenerator
 import me.ankur_varma.chirrup.infra.token.validator.TokenValidator
@@ -20,12 +24,12 @@ class TokenServiceImpl(
     private val refreshTokenRepository: RefreshTokenRepository
 ) : TokenService {
 
-    override fun generateTokenPairFor(id: UserId): TokenPair {
-        val (access, _) = tokenGenerator.generateAccessToken(id, accessDuration * 1000)
-        val (refresh, expiresAt) = tokenGenerator.generateRefreshToken(id, refreshDuration * 1000)
+    override fun generateTokenPairFor(user: User): TokenPair {
+        val (access, _) = tokenGenerator.generateAccessToken(user.id, accessDuration * 1000)
+        val (refresh, expiresAt) = tokenGenerator.generateRefreshToken(user.id, refreshDuration * 1000)
         refreshTokenRepository.save(
             RefreshTokenEntity(
-                userId = id,
+                userId = user.id,
                 hashedToken = hashToken(refresh),
                 expiresAt = expiresAt.toInstant(),
             )
@@ -33,8 +37,33 @@ class TokenServiceImpl(
         return TokenPair(access, refresh)
     }
 
-    override fun refresh(token: String): TokenPair {
-        TODO("Not yet implemented")
+    override fun validateRefreshToken(token: String): ValidatedRefreshToken {
+        val userId = tokenValidator.validateRefreshToken(token) ?: throw InvalidTokenException(token)
+        val hash = hashToken(token)
+        val refreshToken =
+            refreshTokenRepository.findByUserIdAndHashedToken(userId, hash) ?: throw InvalidTokenException(
+                token
+            )
+        val userEntity = refreshToken.user!!
+        return ValidatedRefreshToken(
+            user = userEntity.toUser(),
+            tokenId = refreshToken.id
+        )
+    }
+
+    @Transactional
+    override fun refresh(user: User, tokenId: Long): TokenPair {
+        val (access, _) = tokenGenerator.generateAccessToken(user.id, accessDuration * 1000)
+        val (refresh, expiresAt) = tokenGenerator.generateRefreshToken(user.id, refreshDuration * 1000)
+        refreshTokenRepository.deleteById(tokenId)
+        refreshTokenRepository.save(
+            RefreshTokenEntity(
+                userId = user.id,
+                hashedToken = hashToken(refresh),
+                expiresAt = expiresAt.toInstant(),
+            )
+        )
+        return TokenPair(access, refresh)
     }
 
     private fun hashToken(token: String): String {
