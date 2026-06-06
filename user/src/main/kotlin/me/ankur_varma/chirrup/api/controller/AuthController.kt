@@ -5,15 +5,18 @@ import me.ankur_varma.chirrup.api.dto.AuthenticatedUserDto
 import me.ankur_varma.chirrup.api.dto.LoginRequest
 import me.ankur_varma.chirrup.api.dto.RegisterRequest
 import me.ankur_varma.chirrup.api.dto.UserDto
-import me.ankur_varma.chirrup.api.mappers.toAuthenticatedUserDto
 import me.ankur_varma.chirrup.api.mappers.toUserDto
 import me.ankur_varma.chirrup.service.auth.AuthService
+import me.ankur_varma.chirrup.service.token.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(value = ["/api/auth"])
-class AuthController(private val authService: AuthService) {
+class AuthController(
+    private val authService: AuthService,
+    private val tokenService: TokenService
+) {
     @PostMapping(value = ["/register"])
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@Valid @RequestBody request: RegisterRequest): UserDto {
@@ -22,6 +25,12 @@ class AuthController(private val authService: AuthService) {
 
     @PostMapping(value = ["/login"])
     fun login(@RequestBody credentials: LoginRequest): AuthenticatedUserDto {
-        return authService.authenticateUser(credentials.email, credentials.password).toAuthenticatedUserDto()
+        val user = authService.authenticateUser(credentials.email, credentials.password)
+        val (access, refresh) = tokenService.generateTokenPairFor(user.id)
+        return AuthenticatedUserDto(
+            user = user.toUserDto(),
+            accessToken = access,
+            refreshToken = refresh
+        )
     }
 }
