@@ -26,4 +26,7 @@ class RefreshTokenEntity(
     var expiresAt: Instant,
     @CreationTimestamp
     var createdAt: Instant = Instant.now(),
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    var user: UserEntity? = null
 )

@@ -7,7 +7,6 @@ import me.ankur_varma.chirrup.domain.exception.UsernameTaken
 import me.ankur_varma.chirrup.domain.model.User
 import me.ankur_varma.chirrup.infra.database.entity.UserEntity
 import me.ankur_varma.chirrup.infra.database.mappers.toUser
-import me.ankur_varma.chirrup.infra.database.repository.RefreshTokenRepository
 import me.ankur_varma.chirrup.infra.database.repository.UserRepository
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -17,8 +16,7 @@ import org.springframework.stereotype.Service
 class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val encoder: PasswordEncoder,
-    private val refreshTokenRepository: RefreshTokenRepository
-) : AuthService {
+) : UserService {
 
     override fun registerUser(email: String, username: String, password: String): User {
         try {
@@ -43,6 +41,7 @@ class AuthServiceImpl(
         if (!encoder.matches(password, userEntity.passwordHash)) {
             throw IncorrectPassword(email, password)
         }
+        // TODO: Check if user has a verified email.
         return userEntity.toUser()
     }
 

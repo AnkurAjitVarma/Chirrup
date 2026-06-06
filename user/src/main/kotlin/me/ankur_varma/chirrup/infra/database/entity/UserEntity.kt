@@ -1,12 +1,6 @@
 package me.ankur_varma.chirrup.infra.database.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Index
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import me.ankur_varma.chirrup.domain.model.UserId
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -19,9 +13,9 @@ import java.time.Instant
     indexes = [
         Index(name = "idx_user_email", columnList = "email"),
         Index(name = "idx_user_username", columnList = "username"),
-              ],
+    ],
 )
-class UserEntity (
+class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: UserId? = null,
@@ -37,4 +31,6 @@ class UserEntity (
     var createdAt: Instant = Instant.now(),
     @UpdateTimestamp
     var updatedAt: Instant = Instant.now(),
-    )
+    @OneToMany(mappedBy = "user")
+    var refreshTokens: MutableList<RefreshTokenEntity> = mutableListOf()
+)

@@ -1,9 +1,11 @@
 package me.ankur_varma.chirrup.service.token
 
 import me.ankur_varma.chirrup.domain.model.TokenPair
-import me.ankur_varma.chirrup.domain.model.UserId
+import me.ankur_varma.chirrup.domain.model.User
+import me.ankur_varma.chirrup.domain.model.ValidatedRefreshToken
 
 interface TokenService {
-    fun generateTokenPairFor(id: UserId): TokenPair
-    fun refresh(token: String): TokenPair
+    fun generateTokenPairFor(user: User): TokenPair
+    fun validateRefreshToken(token: String): ValidatedRefreshToken
+    fun refresh(user: User, tokenId: Long): TokenPair
 }
