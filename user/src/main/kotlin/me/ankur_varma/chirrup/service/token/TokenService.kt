@@ -8,4 +8,5 @@ interface TokenService {
     fun generateTokenPairFor(user: User): TokenPair
     fun validateRefreshToken(token: String): ValidatedRefreshToken
     fun refresh(user: User, tokenId: Long): TokenPair
+    fun remove(tokenId: Long)
 }

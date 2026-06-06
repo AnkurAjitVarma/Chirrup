@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.service.auth
+package me.ankur_varma.chirrup.service.user
 
 import me.ankur_varma.chirrup.domain.model.User
 

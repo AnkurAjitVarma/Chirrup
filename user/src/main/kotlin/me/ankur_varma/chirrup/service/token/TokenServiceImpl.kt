@@ -66,6 +66,11 @@ class TokenServiceImpl(
         return TokenPair(access, refresh)
     }
 
+    @Transactional
+    override fun remove(tokenId: Long) {
+        refreshTokenRepository.deleteById(tokenId)
+    }
+
     private fun hashToken(token: String): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val hash = digest.digest(token.encodeToByteArray())
