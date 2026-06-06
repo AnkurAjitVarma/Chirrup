@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.domain.model
+package me.ankur_varma.chirrup.infra.token.model
 
 import java.util.*
 
