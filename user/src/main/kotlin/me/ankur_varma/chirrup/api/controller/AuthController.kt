@@ -11,23 +11,23 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping(value = ["/api/auth"])
 class AuthController(
-    private val authService: UserService,
+    private val userService: UserService,
     private val tokenService: TokenService
 ) {
     @PostMapping(value = ["/register"])
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@Valid @RequestBody body: RegisterRequest): UserDto {
-        return authService.registerUser(body.email, body.username, body.password).toUserDto()
+        return userService.registerUser(body.email, body.username, body.password).toUserDto()
     }
 
     @PostMapping(value = ["/login"])
     fun login(@RequestBody body: LoginRequest): AuthenticatedUserDto {
-        val user = authService.authenticateUser(body.email, body.password)
+        val user = userService.authenticateUser(body.email, body.password)
         val (access, refresh) = tokenService.generateTokenPairFor(user)
         return AuthenticatedUserDto(
             user = user.toUserDto(),
-            accessToken = access,
-            refreshToken = refresh
+            access_token = access,
+            refresh_token = refresh
         )
     }
 
@@ -35,13 +35,12 @@ class AuthController(
     fun refresh(
         @RequestBody body: RefreshRequest
     ): AuthenticatedUserDto {
-        val token = body.token
-        val (user, tokenId) = tokenService.validateRefreshToken(token)
-        val (access, refresh) = tokenService.refresh(user, tokenId)
+        val (user, token) = tokenService.validateRefreshToken(body.token)
+        val (access, refresh) = tokenService.refresh(user, token)
         return AuthenticatedUserDto(
             user = user.toUserDto(),
-            accessToken = access,
-            refreshToken = refresh
+            access_token = access,
+            refresh_token = refresh
         )
     }
 
@@ -49,8 +48,7 @@ class AuthController(
     fun logout(
         @RequestBody body: LogoutRequest
     ) {
-        val token = body.token
-        val (_, tokenId) = tokenService.validateRefreshToken(token)
-        tokenService.remove(tokenId)
+        val (_, token) = tokenService.validateRefreshToken(body.token)
+        tokenService.remove(token)
     }
 }

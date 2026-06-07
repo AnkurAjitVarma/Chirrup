@@ -2,6 +2,7 @@ package me.ankur_varma.chirrup.service.token
 
 import jakarta.transaction.Transactional
 import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
+import me.ankur_varma.chirrup.domain.model.RefreshToken
 import me.ankur_varma.chirrup.domain.model.TokenPair
 import me.ankur_varma.chirrup.domain.model.User
 import me.ankur_varma.chirrup.domain.model.ValidatedRefreshToken
@@ -47,15 +48,19 @@ class TokenServiceImpl(
         val userEntity = refreshToken.user!!
         return ValidatedRefreshToken(
             user = userEntity.toUser(),
-            tokenId = refreshToken.id
+            token = RefreshToken(
+                id = refreshToken.id,
+                value = token,
+                expiresAt = refreshToken.expiresAt
+            )
         )
     }
 
     @Transactional
-    override fun refresh(user: User, tokenId: Long): TokenPair {
+    override fun refresh(user: User, token: RefreshToken): TokenPair {
         val (access, _) = tokenGenerator.generateAccessToken(user.id, accessDuration * 1000)
         val (refresh, expiresAt) = tokenGenerator.generateRefreshToken(user.id, refreshDuration * 1000)
-        refreshTokenRepository.deleteById(tokenId)
+        refreshTokenRepository.deleteById(token.id)
         refreshTokenRepository.save(
             RefreshTokenEntity(
                 userId = user.id,
@@ -67,8 +72,8 @@ class TokenServiceImpl(
     }
 
     @Transactional
-    override fun remove(tokenId: Long) {
-        refreshTokenRepository.deleteById(tokenId)
+    override fun remove(token: RefreshToken) {
+        refreshTokenRepository.deleteById(token.id)
     }
 
     private fun hashToken(token: String): String {
