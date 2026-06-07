@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.infra.token.validator
+package me.ankur_varma.chirrup.infra.token.auth.validator
 
 import me.ankur_varma.chirrup.domain.model.UserId
 

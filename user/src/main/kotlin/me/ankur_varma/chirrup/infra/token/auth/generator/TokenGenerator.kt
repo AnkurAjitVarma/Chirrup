@@ -1,7 +1,7 @@
-package me.ankur_varma.chirrup.infra.token.generator
+package me.ankur_varma.chirrup.infra.token.auth.generator
 
 import me.ankur_varma.chirrup.domain.model.UserId
-import me.ankur_varma.chirrup.infra.token.model.Token
+import me.ankur_varma.chirrup.infra.token.auth.model.Token
 
 interface TokenGenerator {
     fun generateAccessToken(id: UserId, duration: Long): Token

@@ -3,7 +3,7 @@ package me.ankur_varma.chirrup.api.controller
 import jakarta.validation.Valid
 import me.ankur_varma.chirrup.api.dto.*
 import me.ankur_varma.chirrup.api.mappers.toUserDto
-import me.ankur_varma.chirrup.service.token.TokenService
+import me.ankur_varma.chirrup.service.token.auth.AuthTokenService
 import me.ankur_varma.chirrup.service.user.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping(value = ["/api/auth"])
 class AuthController(
     private val userService: UserService,
-    private val tokenService: TokenService
+    private val authTokenService: AuthTokenService
 ) {
     @PostMapping(value = ["/register"])
     @ResponseStatus(HttpStatus.CREATED)
@@ -23,7 +23,7 @@ class AuthController(
     @PostMapping(value = ["/login"])
     fun login(@RequestBody body: LoginRequest): AuthenticatedUserDto {
         val user = userService.authenticateUser(body.email, body.password)
-        val (access, refresh) = tokenService.generateTokenPairFor(user)
+        val (access, refresh) = authTokenService.generateTokenPairFor(user)
         return AuthenticatedUserDto(
             user = user.toUserDto(),
             access_token = access,
@@ -35,8 +35,8 @@ class AuthController(
     fun refresh(
         @RequestBody body: RefreshRequest
     ): AuthenticatedUserDto {
-        val (user, token) = tokenService.validateRefreshToken(body.token)
-        val (access, refresh) = tokenService.refresh(user, token)
+        val (user, token) = authTokenService.validateRefreshToken(body.token)
+        val (access, refresh) = authTokenService.refresh(user, token)
         return AuthenticatedUserDto(
             user = user.toUserDto(),
             access_token = access,
@@ -48,7 +48,7 @@ class AuthController(
     fun logout(
         @RequestBody body: LogoutRequest
     ) {
-        val (_, token) = tokenService.validateRefreshToken(body.token)
-        tokenService.remove(token)
+        val (_, token) = authTokenService.validateRefreshToken(body.token)
+        authTokenService.remove(token)
     }
 }
