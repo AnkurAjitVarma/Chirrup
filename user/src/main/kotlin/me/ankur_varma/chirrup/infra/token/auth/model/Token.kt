@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.infra.token.model
+package me.ankur_varma.chirrup.infra.token.auth.model
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.infra.token.key
+package me.ankur_varma.chirrup.infra.token.auth.key
 
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value

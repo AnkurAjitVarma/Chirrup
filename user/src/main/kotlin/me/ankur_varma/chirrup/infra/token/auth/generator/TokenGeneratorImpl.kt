@@ -1,8 +1,8 @@
-package me.ankur_varma.chirrup.infra.token.generator
+package me.ankur_varma.chirrup.infra.token.auth.generator
 
 import io.jsonwebtoken.Jwts
 import me.ankur_varma.chirrup.domain.model.UserId
-import me.ankur_varma.chirrup.infra.token.model.Token
+import me.ankur_varma.chirrup.infra.token.auth.model.Token
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import java.util.*

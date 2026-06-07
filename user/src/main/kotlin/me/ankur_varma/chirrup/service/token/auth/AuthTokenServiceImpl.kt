@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.service.token
+package me.ankur_varma.chirrup.service.token.auth
 
 import jakarta.transaction.Transactional
 import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
@@ -9,21 +9,21 @@ import me.ankur_varma.chirrup.domain.model.ValidatedRefreshToken
 import me.ankur_varma.chirrup.infra.database.entity.RefreshTokenEntity
 import me.ankur_varma.chirrup.infra.database.mappers.toUser
 import me.ankur_varma.chirrup.infra.database.repository.RefreshTokenRepository
-import me.ankur_varma.chirrup.infra.token.generator.TokenGenerator
-import me.ankur_varma.chirrup.infra.token.validator.TokenValidator
+import me.ankur_varma.chirrup.infra.token.auth.generator.TokenGenerator
+import me.ankur_varma.chirrup.infra.token.auth.validator.TokenValidator
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.util.*
 
 @Service
-class TokenServiceImpl(
+class AuthTokenServiceImpl(
     @param:Value("\${jwt.access-duration}") private val accessDuration: Long,
     @param:Value("\${jwt.refresh-duration}") private val refreshDuration: Long,
     private val tokenGenerator: TokenGenerator,
     private val tokenValidator: TokenValidator,
     private val refreshTokenRepository: RefreshTokenRepository
-) : TokenService {
+) : AuthTokenService {
 
     override fun generateTokenPairFor(user: User): TokenPair {
         val (access, _) = tokenGenerator.generateAccessToken(user.id, accessDuration * 1000)
