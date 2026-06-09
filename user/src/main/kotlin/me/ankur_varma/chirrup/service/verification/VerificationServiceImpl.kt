@@ -11,6 +11,7 @@ import me.ankur_varma.chirrup.infra.database.repository.UserRepository
 import me.ankur_varma.chirrup.infra.database.repository.VerificationTokenRepository
 import me.ankur_varma.chirrup.infra.token.verification.generator.VerificationTokenGenerator
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.time.Instant
@@ -59,6 +60,13 @@ class VerificationServiceImpl(
             tokenEntity.apply {
                 this.usedAt = now
             }
+        )
+    }
+
+    @Scheduled(cron = "0 0 3 * * *")
+    override fun cleanUpExpiredTokens() {
+        tokenRepository.deleteByExpiresAtLessThan(
+            now = Instant.now()
         )
     }
 

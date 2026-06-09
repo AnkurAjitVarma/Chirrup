@@ -6,4 +6,5 @@ import me.ankur_varma.chirrup.domain.model.VerificationToken
 interface VerificationService {
     fun generateVerificationTokenFor(user: User): VerificationToken
     fun verify(token: String)
+    fun cleanUpExpiredTokens()
 }
