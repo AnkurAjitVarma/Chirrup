@@ -38,13 +38,38 @@ class AuthControllerAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onIncorrectPassword(e: IncorrectPassword) = mapOf<String, String>()
 
-    @ExceptionHandler(InvalidTokenException::class)
+    @ExceptionHandler(InvalidAuthToken::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    fun onInvalidTokenException(e: InvalidTokenException) =
+    fun onInvalidTokenException(e: InvalidAuthToken) =
         mapOf(
             "code" to "INVALID_TOKEN",
             "message" to e.message
         )
+
+    @ExceptionHandler(UserNotVerified::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    fun onUserNotVerified(e: UserNotVerified) = mapOf<String, String>()
+
+    @ExceptionHandler(ExpiredVerificationToken::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun onExpiredVerificationToken(e: ExpiredVerificationToken) = mapOf(
+        "error" to "verification_token_expired",
+        "message" to "The verification link has expired. Please request a new one."
+    )
+
+    @ExceptionHandler(UsedVerificationToken::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun onUsedVerificationToken(e: UsedVerificationToken) = mapOf(
+        "error" to "verification_token_used",
+        "message" to "The verification token has been used."
+    )
+
+    @ExceptionHandler(InvalidVerificationToken::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun onInvalidVerificationToken(e: InvalidVerificationToken) = mapOf(
+        "error" to "verification_token_invalid",
+        "message" to "The verification token is invalid."
+    )
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun onMethodArgumentNotValid(e: MethodArgumentNotValidException): ResponseEntity<Map<String, Any>> {

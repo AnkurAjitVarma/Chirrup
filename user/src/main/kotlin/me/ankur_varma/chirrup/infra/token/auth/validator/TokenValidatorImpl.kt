@@ -2,7 +2,7 @@ package me.ankur_varma.chirrup.infra.token.auth.validator
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
-import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
+import me.ankur_varma.chirrup.domain.exception.InvalidAuthToken
 import me.ankur_varma.chirrup.domain.model.UserId
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -13,7 +13,7 @@ import javax.crypto.SecretKey
 class TokenValidatorImpl(@Qualifier("tokenSigningKey") val tokenSigningKey: SecretKey) : TokenValidator {
 
     override fun validateAccessToken(token: String): UserId? {
-        val claims = parseAllClaims(token) ?: throw InvalidTokenException(token)
+        val claims = parseAllClaims(token) ?: throw InvalidAuthToken(token)
         if (claims["type"] == "access") {
             return UUID.fromString(claims.subject)
         }
@@ -21,7 +21,7 @@ class TokenValidatorImpl(@Qualifier("tokenSigningKey") val tokenSigningKey: Secr
     }
 
     override fun validateRefreshToken(token: String): UserId? {
-        val claims = parseAllClaims(token) ?: throw InvalidTokenException(token)
+        val claims = parseAllClaims(token) ?: throw InvalidAuthToken(token)
         if (claims["type"] == "refresh") {
             return UUID.fromString(claims.subject)
         }
