@@ -1,4 +1,4 @@
-package me.ankur_varma.chirrup.service.token.auth
+package me.ankur_varma.chirrup.service.token
 
 import me.ankur_varma.chirrup.domain.model.RefreshToken
 import me.ankur_varma.chirrup.domain.model.TokenPair

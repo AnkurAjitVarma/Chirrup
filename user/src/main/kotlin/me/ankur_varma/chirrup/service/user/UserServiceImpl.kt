@@ -1,9 +1,6 @@
 package me.ankur_varma.chirrup.service.user
 
-import me.ankur_varma.chirrup.domain.exception.IncorrectPassword
-import me.ankur_varma.chirrup.domain.exception.UserAlreadyExists
-import me.ankur_varma.chirrup.domain.exception.UserDoesNotExist
-import me.ankur_varma.chirrup.domain.exception.UsernameTaken
+import me.ankur_varma.chirrup.domain.exception.*
 import me.ankur_varma.chirrup.domain.model.User
 import me.ankur_varma.chirrup.infra.database.entity.UserEntity
 import me.ankur_varma.chirrup.infra.database.mappers.toUser
@@ -41,7 +38,9 @@ class UserServiceImpl(
         if (!encoder.matches(password, userEntity.passwordHash)) {
             throw IncorrectPassword(email, password)
         }
-        // TODO: Check if user has a verified email.
+        if (!userEntity.verified) {
+            throw UserNotVerified(email)
+        }
         return userEntity.toUser()
     }
 

@@ -18,3 +18,7 @@ jwt:
   access-duration: ${JWT_DURATION}
   refresh-duration: ${JWT_REFRESH_DURATION}
   secret: ${JWT_SECRET}
+
+chirrup:
+  verification:
+    duration: 24

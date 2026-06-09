@@ -3,8 +3,9 @@ package me.ankur_varma.chirrup.api.controller
 import jakarta.validation.Valid
 import me.ankur_varma.chirrup.api.dto.*
 import me.ankur_varma.chirrup.api.mappers.toUserDto
-import me.ankur_varma.chirrup.service.token.auth.AuthTokenService
+import me.ankur_varma.chirrup.service.token.AuthTokenService
 import me.ankur_varma.chirrup.service.user.UserService
+import me.ankur_varma.chirrup.service.verification.VerificationService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -12,12 +13,18 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping(value = ["/api/auth"])
 class AuthController(
     private val userService: UserService,
-    private val authTokenService: AuthTokenService
+    private val authTokenService: AuthTokenService,
+    private val verificationService: VerificationService
 ) {
     @PostMapping(value = ["/register"])
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@Valid @RequestBody body: RegisterRequest): UserDto {
-        return userService.registerUser(body.email, body.username, body.password).toUserDto()
+        val user = userService.registerUser(body.email, body.username, body.password)
+        val token = verificationService.generateVerificationTokenFor(user)
+        println("-----------------------------------------------------------------------")
+        println(token)
+        println("-----------------------------------------------------------------------")
+        return user.toUserDto()
     }
 
     @PostMapping(value = ["/login"])
@@ -50,5 +57,12 @@ class AuthController(
     ) {
         val (_, token) = authTokenService.validateRefreshToken(body.token)
         authTokenService.remove(token)
+    }
+
+    @GetMapping(value = ["/verify"])
+    fun verify(
+        @RequestParam token: String
+    ) {
+        verificationService.verify(token)
     }
 }

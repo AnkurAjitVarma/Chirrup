@@ -1,7 +1,7 @@
-package me.ankur_varma.chirrup.service.token.auth
+package me.ankur_varma.chirrup.service.token
 
 import jakarta.transaction.Transactional
-import me.ankur_varma.chirrup.domain.exception.InvalidTokenException
+import me.ankur_varma.chirrup.domain.exception.InvalidAuthToken
 import me.ankur_varma.chirrup.domain.model.RefreshToken
 import me.ankur_varma.chirrup.domain.model.TokenPair
 import me.ankur_varma.chirrup.domain.model.User
@@ -39,10 +39,10 @@ class AuthTokenServiceImpl(
     }
 
     override fun validateRefreshToken(token: String): ValidatedRefreshToken {
-        val userId = tokenValidator.validateRefreshToken(token) ?: throw InvalidTokenException(token)
+        val userId = tokenValidator.validateRefreshToken(token) ?: throw InvalidAuthToken(token)
         val hash = hashToken(token)
         val refreshToken =
-            refreshTokenRepository.findByUserIdAndHashedToken(userId, hash) ?: throw InvalidTokenException(
+            refreshTokenRepository.findByUserIdAndHashedToken(userId, hash) ?: throw InvalidAuthToken(
                 token
             )
         val userEntity = refreshToken.user!!
